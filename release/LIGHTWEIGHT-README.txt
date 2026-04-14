@@ -42,4 +42,4 @@ Notes:
 - The settings screen uses tabs for General, Look, and Hotkeys
 - The Look tab includes more colors and four sizes: Small, Medium, Large, and Jumbo
 - The desktop shortcuts use separate icons for the main app and settings
-- Use "Raining Code Settings" to change startup behavior, colors, size, tray visibility, and hotkeys without putting controls on the screen
+- Use "Raining Code Settings" to change startup behavior, colors, size, and hotkeys without putting controls on the screen

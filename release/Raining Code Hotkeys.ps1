@@ -22,7 +22,6 @@ function Get-DefaultSettings {
     startupEnabled = $true
     defaultColorMode = 'Red'
     defaultSizeMode = 'Small'
-    showTrayIcon = $false
   }
 }
 
@@ -98,18 +97,13 @@ function Get-HotkeySettings {
     $startupEnabled = [bool]$parsed.startupEnabled
   }
 
-  $showTrayIcon = $defaults.showTrayIcon
-  if ($null -ne $parsed.showTrayIcon) {
-    $showTrayIcon = [bool]$parsed.showTrayIcon
-  }
-
   return [pscustomobject]@{
     toggleHotkey = $toggleHotkey
     quitHotkey = $quitHotkey
     startupEnabled = $startupEnabled
     defaultColorMode = $defaultColorMode
     defaultSizeMode = $defaultSizeMode
-    showTrayIcon = $showTrayIcon
+    showTrayIcon = $false
   }
 }
 
@@ -1087,14 +1081,14 @@ try {
 
   Write-LauncherLog 'Loading hotkey settings.'
   $settings = Get-HotkeySettings
-  Write-LauncherLog "Settings loaded. Toggle=$($settings.toggleHotkey) Quit=$($settings.quitHotkey) Color=$($settings.defaultColorMode) Size=$($settings.defaultSizeMode) Tray=$($settings.showTrayIcon)"
+  Write-LauncherLog "Settings loaded. Toggle=$($settings.toggleHotkey) Quit=$($settings.quitHotkey) Color=$($settings.defaultColorMode) Size=$($settings.defaultSizeMode)"
   $toggleHotkey = Convert-HotkeyString -Value $settings.toggleHotkey
   $quitHotkey = Convert-HotkeyString -Value $settings.quitHotkey
   $defaultColorMode = Convert-ColorModeName -Value $settings.defaultColorMode
   $defaultSizeMode = Convert-SizeModeName -Value $settings.defaultSizeMode
 
   Write-LauncherLog 'Creating hotkey host.'
-  $hotkeyHost = New-Object MatrixHotkeyHost($logPath, $defaultColorMode, $defaultSizeMode, $settings.showTrayIcon, $settingsLauncherPath, $visualizerIconPath)
+  $hotkeyHost = New-Object MatrixHotkeyHost($logPath, $defaultColorMode, $defaultSizeMode, $false, $settingsLauncherPath, $visualizerIconPath)
   Write-LauncherLog 'Creating hidden host handle.'
   $null = $hotkeyHost.Handle
   Write-LauncherLog 'Registering hotkeys.'

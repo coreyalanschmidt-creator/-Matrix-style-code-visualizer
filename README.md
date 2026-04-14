@@ -8,7 +8,7 @@ A simple Windows desktop app that turns your screen into bright fullscreen raini
 - Keeps a lightweight background helper ready so the hotkey works without reopening the app.
 - Starts in bright red by default, with many extra colors and a rainbow mode.
 - Lets you pick `Small`, `Medium`, `Large`, or `Jumbo` code size.
-- Keeps the helper hidden until you use the hotkey, with an optional tray icon if you want one.
+- Keeps the helper hidden until you use the hotkey.
 
 ## Default Controls
 
@@ -30,7 +30,7 @@ If Windows blocks unsigned `.exe` builds on your machine, use the lightweight in
 - `Launch Raining Code.cmd`
   Starts the lightweight hotkey helper immediately.
 - `Raining Code Settings.cmd`
-  Opens the settings window for startup, look, tray visibility, and hotkeys.
+  Opens the settings window for startup, look, and hotkeys.
 - `Uninstall Raining Code.cmd`
   Removes the lightweight install from this PC.
 

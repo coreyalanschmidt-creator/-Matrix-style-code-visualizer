@@ -17,7 +17,6 @@ function Get-DefaultSettings {
     startupEnabled = $true
     defaultColorMode = 'Red'
     defaultSizeMode = 'Small'
-    showTrayIcon = $false
   }
 }
 
@@ -91,18 +90,13 @@ function Get-SavedSettings {
     $startupEnabled = [bool]$parsed.startupEnabled
   }
 
-  $showTrayIcon = $defaults.showTrayIcon
-  if ($null -ne $parsed.showTrayIcon) {
-    $showTrayIcon = [bool]$parsed.showTrayIcon
-  }
-
   return [pscustomobject]@{
     toggleHotkey = $toggleHotkey
     quitHotkey = $quitHotkey
     startupEnabled = $startupEnabled
     defaultColorMode = $defaultColorMode
     defaultSizeMode = $defaultSizeMode
-    showTrayIcon = $showTrayIcon
+    showTrayIcon = $false
   }
 }
 
@@ -516,45 +510,7 @@ try {
 
   $launchCard.Controls.AddRange(@($launchTitle, $launchInfo, $startupCheckbox))
 
-  $indicatorCard = New-Object System.Windows.Forms.Panel
-  $indicatorCard.Left = 22
-  $indicatorCard.Top = 150
-  $indicatorCard.Width = 660
-  $indicatorCard.Height = 126
-  $indicatorCard.BackColor = [System.Drawing.Color]::FromArgb(28, 18, 21)
-  $indicatorCard.BorderStyle = [System.Windows.Forms.BorderStyle]::FixedSingle
-
-  $indicatorTitle = New-Object System.Windows.Forms.Label
-  $indicatorTitle.Text = 'Tray icon'
-  $indicatorTitle.Left = 18
-  $indicatorTitle.Top = 16
-  $indicatorTitle.Width = 160
-  $indicatorTitle.ForeColor = [System.Drawing.Color]::White
-  $indicatorTitle.Font = New-Object System.Drawing.Font('Segoe UI Semibold', 11, [System.Drawing.FontStyle]::Bold)
-
-  $indicatorInfo = New-Object System.Windows.Forms.Label
-  $indicatorInfo.Text = 'You do not need any window on screen for this app to work. Turn this on only if you want a small icon near the clock.'
-  $indicatorInfo.Left = 18
-  $indicatorInfo.Top = 42
-  $indicatorInfo.Width = 620
-  $indicatorInfo.Height = 36
-  $indicatorInfo.ForeColor = [System.Drawing.Color]::FromArgb(214, 194, 194)
-  $indicatorInfo.Font = New-Object System.Drawing.Font('Segoe UI', 9)
-
-  $trayCheckbox = New-Object System.Windows.Forms.CheckBox
-  $trayCheckbox.Text = 'Show a tray icon'
-  $trayCheckbox.Left = 18
-  $trayCheckbox.Top = 84
-  $trayCheckbox.Width = 330
-  $trayCheckbox.Checked = [bool]$settings.showTrayIcon
-  $trayCheckbox.ForeColor = [System.Drawing.Color]::White
-  $trayCheckbox.FlatStyle = [System.Windows.Forms.FlatStyle]::Flat
-  $trayCheckbox.FlatAppearance.BorderColor = [System.Drawing.Color]::FromArgb(116, 64, 64)
-  $trayCheckbox.FlatAppearance.CheckedBackColor = [System.Drawing.Color]::FromArgb(86, 18, 18)
-
-  $indicatorCard.Controls.AddRange(@($indicatorTitle, $indicatorInfo, $trayCheckbox))
-
-  $generalTab.Controls.AddRange(@($launchCard, $indicatorCard))
+  $generalTab.Controls.Add($launchCard)
 
   $lookIntro = New-Object System.Windows.Forms.Label
   $lookIntro.Text = 'Choose the look you want at startup. While the effect is open, press C to change color or S to change size.'
@@ -577,6 +533,7 @@ try {
   $colorFlow.Top = 88
   $colorFlow.Width = 664
   $colorFlow.Height = 152
+  $colorFlow.Padding = New-Object System.Windows.Forms.Padding(0)
   $colorFlow.WrapContents = $true
   $colorFlow.FlowDirection = [System.Windows.Forms.FlowDirection]::LeftToRight
 
@@ -598,9 +555,9 @@ try {
     $button = New-Object System.Windows.Forms.RadioButton
     $button.Appearance = [System.Windows.Forms.Appearance]::Button
     $button.AutoSize = $false
-    $button.Width = 122
-    $button.Height = 64
-    $button.Margin = New-Object System.Windows.Forms.Padding(0, 0, 12, 12)
+    $button.Width = 116
+    $button.Height = 60
+    $button.Margin = New-Object System.Windows.Forms.Padding(0, 0, 10, 10)
     $button.Text = $colorChoice.Name
     $button.TextAlign = [System.Drawing.ContentAlignment]::MiddleCenter
     $button.Font = New-Object System.Drawing.Font('Segoe UI Semibold', 10, [System.Drawing.FontStyle]::Bold)
@@ -770,7 +727,6 @@ try {
         startupEnabled = [bool]$startupCheckbox.Checked
         defaultColorMode = [string]$selectedColor.Tag
         defaultSizeMode = [string]$selectedSize.Tag
-        showTrayIcon = [bool]$trayCheckbox.Checked
       }
 
       Save-Settings -Settings $newSettings

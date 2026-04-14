@@ -3,6 +3,5 @@
   "quitHotkey": "Ctrl+Alt+Q",
   "startupEnabled": true,
   "defaultColorMode": "Red",
-  "defaultSizeMode": "Small",
-  "showTrayIcon": false
+  "defaultSizeMode": "Small"
 }
