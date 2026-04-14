@@ -1,0 +1,18 @@
+node_modules/
+out/
+
+release/install-smoke/
+release/win-unpacked/
+release/builder-debug.yml
+release/*.exe
+release/*.blockmap
+release/*uninstaller*.exe
+release/*launcher.log
+release/screen-capture*.png
+release/settings-screen*.png
+release/*Lightweight.zip
+release/Matrix Visualizer.hta
+release/Enable Matrix Hotkeys On Startup.cmd
+release/Disable Matrix Hotkeys On Startup.cmd
+
+tmp-test.hta

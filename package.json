@@ -1,0 +1,52 @@
+{
+  "name": "raining-code",
+  "version": "0.1.0",
+  "private": true,
+  "author": "Codex",
+  "description": "Bright red raining code desktop visualizer for Windows",
+  "main": "out/main/index.js",
+  "scripts": {
+    "dev": "electron-vite --config electron.vite.config.mjs",
+    "build": "electron-vite build --config electron.vite.config.mjs",
+    "typecheck": "tsc --noEmit",
+    "dist": "electron-vite build --config electron.vite.config.mjs && electron-builder"
+  },
+  "devDependencies": {
+    "@types/node": "^22.13.0",
+    "electron-builder": "^25.1.8",
+    "electron-vite": "^2.3.0",
+    "electron": "^31.0.0",
+    "typescript": "^5.8.0"
+  },
+  "build": {
+    "appId": "com.codex.rainingcode",
+    "productName": "Raining Code",
+    "asar": true,
+    "electronDist": "node_modules/electron/dist",
+    "npmRebuild": false,
+    "files": [
+      "out/**",
+      "package.json"
+    ],
+    "directories": {
+      "output": "release"
+    },
+    "win": {
+      "signAndEditExecutable": false,
+      "target": [
+        "nsis",
+        "portable"
+      ]
+    },
+    "nsis": {
+      "artifactName": "${productName}-Setup-${version}-${arch}.${ext}",
+      "script": "build/installer.nsi",
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true
+    },
+    "portable": {
+      "artifactName": "${productName}-Portable-${version}-${arch}.${ext}"
+    }
+  }
+}

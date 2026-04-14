@@ -1,0 +1,8 @@
+{
+  "toggleHotkey": "Ctrl+Alt+M",
+  "quitHotkey": "Ctrl+Alt+Q",
+  "startupEnabled": true,
+  "defaultColorMode": "Red",
+  "defaultSizeMode": "Small",
+  "showTrayIcon": false
+}
