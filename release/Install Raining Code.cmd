@@ -43,11 +43,18 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -Command ^
   "$settingsShortcut.Save(); " ^
   "$legacyNames = @('Matrix Visualizer.lnk', 'Matrix Settings.lnk', 'Matrix Visualizer Settings.lnk', 'Change Matrix Hotkeys.lnk'); " ^
   "foreach ($legacyName in $legacyNames) { $legacyPath = Join-Path $desktop $legacyName; if (Test-Path $legacyPath) { Remove-Item $legacyPath -Force } }; " ^
-  "$legacyStartupPath = Join-Path $startup 'Matrix Visualizer.lnk'; if (Test-Path $legacyStartupPath) { Remove-Item $legacyStartupPath -Force }; " ^
-  "$startupShortcut = $shell.CreateShortcut((Join-Path $startup 'Raining Code.lnk')); " ^
-  "$startupShortcut.TargetPath = $target; " ^
-  "$startupShortcut.WorkingDirectory = $workdir; " ^
-  "$startupShortcut.IconLocation = (Join-Path $env:LOCALAPPDATA 'Raining Code\Raining Code Icon.ico'); " ^
-  "$startupShortcut.Save()"
+  "$startupShortcut = Join-Path $startup 'Raining Code.lnk'; if (Test-Path $startupShortcut) { Remove-Item $startupShortcut -Force }; " ^
+  "$legacyStartupPath = Join-Path $startup 'Matrix Visualizer.lnk'; if (Test-Path $legacyStartupPath) { Remove-Item $legacyStartupPath -Force }"
+
+powershell.exe -NoProfile -ExecutionPolicy Bypass -Command ^
+  "$settingsPath = Join-Path $env:LOCALAPPDATA 'Raining Code\hotkey-settings.json'; " ^
+  "$runPath = 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Run'; " ^
+  "$valueName = 'Raining Code'; " ^
+  "$powershellPath = Join-Path $env:SystemRoot 'System32\WindowsPowerShell\v1.0\powershell.exe'; " ^
+  "$helperPath = Join-Path $env:LOCALAPPDATA 'Raining Code\Raining Code Hotkeys.ps1'; " ^
+  "$startupCommand = '\"' + $powershellPath + '\" -NoProfile -STA -ExecutionPolicy Bypass -WindowStyle Hidden -File \"' + $helperPath + '\"'; " ^
+  "$startupEnabled = $true; " ^
+  "if (Test-Path $settingsPath) { try { $parsed = Get-Content $settingsPath -Raw | ConvertFrom-Json; if ($null -ne $parsed.startupEnabled) { $startupEnabled = [bool]$parsed.startupEnabled } } catch {} }; " ^
+  "if ($startupEnabled) { if (-not (Test-Path $runPath)) { $null = New-Item -Path $runPath -Force }; Set-ItemProperty -Path $runPath -Name $valueName -Value $startupCommand -Type String } else { Remove-ItemProperty -Path $runPath -Name $valueName -ErrorAction SilentlyContinue }"
 
 start "" "%installDir%\Launch Raining Code.cmd"

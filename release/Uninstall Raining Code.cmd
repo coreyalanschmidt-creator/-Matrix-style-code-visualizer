@@ -13,6 +13,8 @@ for /f "tokens=2 delims==;" %%P in ('wmic process where "name='mshta.exe' and co
 
 del /Q "%APPDATA%\Microsoft\Windows\Start Menu\Programs\Startup\Raining Code.lnk" >nul 2>nul
 del /Q "%APPDATA%\Microsoft\Windows\Start Menu\Programs\Startup\Matrix Visualizer.lnk" >nul 2>nul
+powershell.exe -NoProfile -ExecutionPolicy Bypass -Command ^
+  "Remove-ItemProperty -Path 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Run' -Name 'Raining Code' -ErrorAction SilentlyContinue; Remove-ItemProperty -Path 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Run' -Name 'Matrix Visualizer' -ErrorAction SilentlyContinue"
 for /f "usebackq delims=" %%D in (`powershell.exe -NoProfile -ExecutionPolicy Bypass -Command "[Environment]::GetFolderPath('Desktop')"`) do (
   del /Q "%%D\Raining Code.lnk" >nul 2>nul
   del /Q "%%D\Raining Code Settings.lnk" >nul 2>nul

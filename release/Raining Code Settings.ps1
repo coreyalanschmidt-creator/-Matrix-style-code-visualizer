@@ -7,6 +7,9 @@ $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 $settingsPath = Join-Path $scriptDir 'hotkey-settings.json'
 $helperScriptPath = Join-Path $scriptDir 'Raining Code Hotkeys.ps1'
 $startupShortcutPath = Join-Path ([Environment]::GetFolderPath('Startup')) 'Raining Code.lnk'
+$legacyStartupShortcutPath = Join-Path ([Environment]::GetFolderPath('Startup')) 'Matrix Visualizer.lnk'
+$startupRunRegistryPath = 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Run'
+$startupRunValueName = 'Raining Code'
 $settingsIconPath = Join-Path $scriptDir 'Raining Code Settings Icon.ico'
 $settingsMutexName = 'Local\RainingCodeSettingsWindow'
 
@@ -107,23 +110,44 @@ function Save-Settings {
 }
 
 function Test-StartupEnabled {
-  return Test-Path -LiteralPath $startupShortcutPath
+  try {
+    $startupValue = (Get-ItemProperty -Path $startupRunRegistryPath -Name $startupRunValueName -ErrorAction Stop).$startupRunValueName
+    if (-not [string]::IsNullOrWhiteSpace([string]$startupValue)) {
+      return $true
+    }
+  } catch {
+  }
+
+  return (Test-Path -LiteralPath $startupShortcutPath) -or (Test-Path -LiteralPath $legacyStartupShortcutPath)
 }
 
 function Set-StartupEnabled {
   param([bool]$Enabled)
 
+  $powershellPath = Join-Path $env:SystemRoot 'System32\WindowsPowerShell\v1.0\powershell.exe'
+  $startupCommand = '"' + $powershellPath + '" -NoProfile -STA -ExecutionPolicy Bypass -WindowStyle Hidden -File "' + $helperScriptPath + '"'
+
   if ($Enabled) {
-    $shell = New-Object -ComObject WScript.Shell
-    $shortcut = $shell.CreateShortcut($startupShortcutPath)
-    $shortcut.TargetPath = Join-Path $scriptDir 'Launch Raining Code.cmd'
-    $shortcut.WorkingDirectory = $scriptDir
-    $shortcut.Save()
+    if (-not (Test-Path -LiteralPath $startupRunRegistryPath)) {
+      $null = New-Item -Path $startupRunRegistryPath -Force
+    }
+
+    Set-ItemProperty -Path $startupRunRegistryPath -Name $startupRunValueName -Value $startupCommand -Type String
+    if (Test-Path -LiteralPath $startupShortcutPath) {
+      Remove-Item -LiteralPath $startupShortcutPath -Force -ErrorAction SilentlyContinue
+    }
+    if (Test-Path -LiteralPath $legacyStartupShortcutPath) {
+      Remove-Item -LiteralPath $legacyStartupShortcutPath -Force -ErrorAction SilentlyContinue
+    }
     return
   }
 
+  Remove-ItemProperty -Path $startupRunRegistryPath -Name $startupRunValueName -ErrorAction SilentlyContinue
   if (Test-Path -LiteralPath $startupShortcutPath) {
     Remove-Item -LiteralPath $startupShortcutPath -Force
+  }
+  if (Test-Path -LiteralPath $legacyStartupShortcutPath) {
+    Remove-Item -LiteralPath $legacyStartupShortcutPath -Force -ErrorAction SilentlyContinue
   }
 }
 
